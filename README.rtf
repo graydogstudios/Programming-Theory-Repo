@@ -1,0 +1,52 @@
+###
+
+FOUR PILLARS OF OOP
+
+This is meant to be a two player game. The goal is to have your
+own figures go in the enemy goal zone (behind the enemy sphere)
+while preventing his spheres from reaching your goal zone.
+
+Aside from left and right arrow to move your sphere to block 
+enemy figures, you can press space to use your powerup.
+
+Your mini-sphere will dash to the right. Your cylinders will dash
+forward, although cylinders can only dash once. However, using your
+power-up comes with a cost, as it makes your sphere (goaltender) jump,
+leaving your own goal vulnerable
+
+
+Cylinders are worth 1 point, spheres are worth 2.
+
+Here is how the four pillars of Object-oriented programming were implemented.
+
+##################
+Encapsulation
+################
+
+GameManager has a public variable score, which is used to calculate speed
+of the cylinder. The higher your score, the faster your cylinder will get.
+This variable is accessed by a get inside the GameManager.cs script.
+It also has a private set so the function UpdateScore() inside GameManager
+can properly update the score when you score a goal.
+
+####################
+Abstraction
+#################
+The update() method for your player movement only calls other functions, 
+namely, CheckMove(), Jump(), CapPosition(), etc. All code is handled by
+separate methods
+
+###############
+Inheritance
+#############
+GameManager and PlayerController inherit from MonoBehavior.
+Missiles (small spheres) inherit from PlayerController, and 
+Bomb (cylinders) inherit from Missiles.
+
+#################
+Polymorphism
+##################
+Missiles and Bomb used the same "Jump" feature inherited from 
+PlayerController (even if bomb is a child of a child), however their
+actions are completely different. Both use override methods to change 
+how Jump works. 

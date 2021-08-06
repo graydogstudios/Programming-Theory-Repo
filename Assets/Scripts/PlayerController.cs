@@ -4,27 +4,28 @@ using UnityEngine;
 //PLZBEINVISUALSTUDIO
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] public GameObject player;
-    [SerializeField] private float speed = 1.0f;
-    [SerializeField] private float horizontalInput;
-    [SerializeField] private Rigidbody playerRb;
-    [SerializeField] private float limitZ=5.0f;
-    [SerializeField] private float gracePeriod = 1.0f;
+    [SerializeField] public GameManager gameManager;
+    [SerializeField] public float speed = 1.0f;
+    [SerializeField] public float horizontalInput;
+    [SerializeField] public Rigidbody playerRb;
+    [SerializeField] public float limitZ=5.0f;
+    [SerializeField] public float gracePeriod = 1.0f;
 
     //Jump control
-    [SerializeField] private float jumpSpeed = 5.0f;
+    [SerializeField] public float jumpSpeed = 5.0f;
     public bool isGrounded=true;
     // Start is called before the first frame update
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        playerRb.AddForce(Vector3.forward * horizontalInput * speed * 2);
+        CheckMove();
+       
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         { 
@@ -44,9 +45,20 @@ public class PlayerController : MonoBehaviour
       //  }
 
         CapPosition();
+        DestroyObject();
     }
 
-    void CapPosition()
+    public virtual void DestroyObject()
+    { 
+        if (transform.position.y < -10) 
+        
+        {
+            gameManager.UpdateScore(2); 
+            Destroy(gameObject);
+            
+                }  
+    }
+    public virtual void CapPosition()
     {
         Vector3 paddlePos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         ResetSpeed();
@@ -54,7 +66,7 @@ public class PlayerController : MonoBehaviour
         transform.position = paddlePos;
     }
 
-    void ResetSpeed()
+   public virtual void ResetSpeed()
     {
         //Reset player velocity if a bound is reached, so player can move more easily
         if (transform.position.z < -limitZ * gracePeriod || transform.position.z > limitZ * gracePeriod)
@@ -72,6 +84,12 @@ public class PlayerController : MonoBehaviour
         StartCoroutine("JumpCoolDown");
         
             
+    }
+
+    public virtual void CheckMove()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        playerRb.AddForce(Vector3.forward * horizontalInput * speed * 2);
     }
 
     IEnumerator JumpCoolDown()
